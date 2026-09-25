@@ -1,40 +1,46 @@
 # Perguntas ao Product Owner
 
-<!-- Este arquivo é entregável.
-
-     Use-o para o que você NÃO conseguiu decidir sozinho a partir do README, da
-     especificação e do changelog — e que precisa de uma definição de produto
-     antes de virar um "esperado" no seu relatório.
-
-     Registrar a dúvida aqui não é sinal de insegurança: é o contrário. Assumir
-     uma interpretação em silêncio e reportar como problema aquilo que talvez
-     nunca tenha sido definido é o erro que queremos ver você evitar. -->
-
 ## Perguntas em aberto
 
 <!-- Para cada pergunta, use o bloco abaixo. Copie quantas vezes precisar. -->
 
-### 1. <título curto da dúvida>
+### 1. Quantidade de volumes
 
-**Onde apareceu:** <arquivo, seção, ou tela/rota onde você esbarrou nisso>
+**Onde apareceu:** 
+Tela de cotações 
 
 **O que está ambíguo:**
-<!-- Cite as duas leituras possíveis, com o trecho de cada fonte que sustenta
-     cada uma. -->
+->  A documentação explica que devemos considerar 
+o valor base (de acordo com o peso), o multiplicador 
+pela rota e o imposto sobre o valor, não incluindo a 
+quantidade de volumes. Porém, a informação volumes 
+aparece na tela de cotações. Essa informação é relevante? 
+Deve-se compreender que o peso informado já é 
+o peso com todos os volumes? 
 
 **O que a v1 faz hoje:**
+-
 
 **O que a v2 faz:**
+-
 
 **Por que isso importa:**
-<!-- Consequência prática de cada interpretação: quantas cotações mudam de
-     valor, quanto muda em reais, quem é afetado. -->
+Há diferença considerável no preço se incluirmos a quantidade
+de volumes no cálculo da cotação. 
 
 **Interpretação que adotei enquanto não há resposta:**
-<!-- E, importante: o que muda no seu relatório se o PO responder o contrário. -->
+Interpretação tomada é que o sistema considera que o peso
+pertence ao conjunto de volumes (ex: 20kg, 2 volumes -> cada volume teria 10kg), dada a informação de como 
+deve-se realizar o cálculo. 
+Como a versão 1 já está em produção e o cálculo está sendo realizado dessa forma, sem informação no read.me, adotou-se
+a decisão de desconsiderar a informação dada na tela de 
+cotações. 
 
-**Bloqueia o go/no-go?** Sim | Não — <por quê>
-
+**Bloqueia o go/no-go?** 
+<!-- Sim/Não e Por quê   -->
+Não. No momento da escrita dessa dúvida, não havia motivo 
+para considerar o comportamento como bug, visto que o 
+read.me não leva em consideração a quantidade de volumes. 
 ---
 
 ## Decisões que tomei sem perguntar
