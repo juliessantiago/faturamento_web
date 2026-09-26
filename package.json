@@ -6,7 +6,10 @@
   "main": "server.js",
   "scripts": {
     "start:v1": "node server.js v1",
-    "start:v2": "node server.js v2"
+    "start:v2": "node server.js v2",
+    "test:postman:v1": "newman run postman/collection.json -e postman/environment-v1.json",
+    "test:postman:v2": "newman run postman/collection.json -e postman/environment-v2.json",
+    "test:postman": "npm run test:postman:v1 && npm run test:postman:v2"
   },
   "engines": {
     "node": ">=18"

@@ -25,9 +25,13 @@ Newman (para execução)
 
 ## Pré-condições
 
-<!-- As duas versões precisam estar no ar? Em que portas? A suíte sobe os
-     servidores sozinha ou espera que já estejam rodando? Ela depende do estado
-     inicial dos dados? -->
+### O que está sendo testado
+
+A collection está organizada em pastas: `faixa-de-peso`, `faturamento`,
+`validacao-cotacao`, `desconto-volume`. Cada requisição contém as asserções
+(`pm.test`) que validam o contrato descrito no README e no SPEC. A mesma
+collection é rodada duas vezes — uma por environment (`v1` e `v2`) — para
+comparar o comportamento entre as versões.
 
 
 ## Cenários cobertos
