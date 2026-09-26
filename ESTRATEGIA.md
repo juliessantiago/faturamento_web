@@ -4,10 +4,14 @@
 
 ## Contexto e objetivo da validação
 
+--> A atual validação tem como objetivo trazer embasamento para liberação da nova versão, não trazendo riscos financeiros e de negócio. A principal pergunta é: "Podemos subir a nova versão de forma segura e sem perdas de funcionalidade?"
+
+
 <!-- Em duas ou três frases: o que está em jogo nesta validação e qual pergunta
      você precisa responder até sexta. -->
 
 ## Análise de risco
+
 
 <!-- Quais áreas do sistema concentram o maior prejuízo se falharem, e por quê.
      Ordene por risco, não por facilidade de teste. -->
@@ -16,7 +20,8 @@
 |---|---|---|---|---|
 | Engine de cálculo - cotação | Uso de valor incorreto para desconto, base de cálculo por peso ou de multiplicador  | Impacto crítico - pode causar prejuízo financeiro à empresa em caso de cobrança abaixo do correto ou prejuízo ao cliente, gerando possíveis questões jurídicas  |Alta  |1  |
 |Contrato da API (entre v1 e v2)|Mudança dos campos em requests ou responses - alteração de campos, de tipos dos campos |Impacto importante - pode causar quebra da integração com a API, impossibilitando o funcionamento correto do sistema|Média|1
-|||||
+|Engine de Cálculo - desconto|Aplicação de desconto a cargas com volumes não elegíveis de acordo com as regras estabelecidas| Impacto crítico - poderá haver cobrança ao cliente abaixo do valor correto, o que acarretaria em perda financeira à empresa |Alta|1
+|Engine de cálculo - arredondamento |Ausência de precisão no arredondamento do valor final da cotação |Impacto médio - a curto e médio prazo não haveria risco alto relacionado a perdas à empresa ou aos clientes, tratando-se diferenças dízimas decimais. Porém, seria necessário ajuste para que o acúmulo das diferenças não cause impacto financeiro. |Baixa|2
 
 ## Fontes de verdade usadas
 
