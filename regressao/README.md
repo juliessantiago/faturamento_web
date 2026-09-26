@@ -5,13 +5,23 @@
 
 ## Como rodar
 
-<!-- O comando único. Se precisar de instalação prévia, descreva aqui os passos.
-     Quem for avaliar vai copiar e colar isto — precisa funcionar numa máquina
-     limpa com Node 18. -->
+Ferramenta escolhida: Postman + Newman (executor de linha de comando do Postman).
 
-```bash
+### Por quê escolhi essas ferramentas? 
 
-```
+Optei por testar via API com Postman por já ter experiência da ferramenta, o que me
+permitiu focar na cobertura das regras de negócio em vez de gastar tempo
+aprendendo uma nova sintaxe de testes. A collection roda de forma idêntica pela
+interface do Postman (pra desenvolvimento) e pelo terminal via
+Newman (para execução)
+
+### Pré-requisitos
+- Node.js 18+ (mesmo do projeto)
+- As duas versões do servidor rodando previamente:
+  - `node server.js v1` (porta 3001)
+  - `node server.js v2` (porta 3002)
+
+### Como rodar
 
 ## Pré-condições
 
@@ -19,15 +29,6 @@
      servidores sozinha ou espera que já estejam rodando? Ela depende do estado
      inicial dos dados? -->
 
-## Ferramenta escolhida e por quê
-
-<!-- Escolha livre. Justifique em duas linhas: o que pesou na decisão, dado o
-     prazo e o objetivo desta suíte.
-
-     Se preferir não instalar nada: o Node 18+ já traz executor de testes
-     (`node --test`) e `fetch` embutido, o que basta para bater nas duas portas
-     e comparar valores. Playwright, Cypress, Postman/Newman, pytest — qualquer
-     um serve, desde que rode com um comando documentado. -->
 
 ## Cenários cobertos
 
