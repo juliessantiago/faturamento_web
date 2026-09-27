@@ -69,6 +69,10 @@ O padrão — sempre a faixa imediatamente seguinte, nunca a anterior, e apenas 
 
 Suíte de teste via Postman e Newman, pasta valor_borda_peso
 
+##Impacto 
+
+Como valores de base estão sendo usados "fora da borda",  acima da faixa que deveriam pertencer, o valor das cotações está sendo calculado a mais do que deveria. Tal erro causa uma cobrança indevida aos clientes, tratando-se de um bug CRÍTICO. 
+
 --> Para rodar teste: 
 
 :arrow_forward: **npx newman run postman/collection.json -e postman/environment.json --folder valor_borda_peso**

@@ -51,27 +51,27 @@
       ]
     },
     {
-      "name": "multiplicador",
+      "name": "valor_borda_desconto",
       "item": [
         {
-          "name": "multiplicador",
+          "name": "valor_borda_desconto",
           "event": [
             {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "const jsonV1 = pm.response.json();\r\n\r\npm.test(\"v1 respondeu com sucesso\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\n// Busca a v2 pra comparar, usando a mesma cotação (id 10)\r\npm.sendRequest({\r\n    url: `${pm.environment.get(\"url_base_v2\")}/cotacoes/10`,\r\n    method: 'GET'\r\n}, function (err, resV2) {\r\n    if (err) {\r\n        console.error(err);\r\n        return;\r\n    }\r\n\r\n    const jsonV2 = resV2.json();\r\n\r\n    pm.test(\"valor_base da v2 é idêntico ao da v1\", function () {\r\n        pm.expect(jsonV2.valor_base).to.eql(jsonV1.valor_base);\r\n    });\r\n\r\n    pm.test(\"multiplicador da v2 é idêntico ao da v1\", function () {\r\n        pm.expect(jsonV2.multiplicador).to.eql(jsonV1.multiplicador);\r\n    });\r\n});"
+                  "const casos = [\r\n  { volumes: 9,  desconto_esperado: 0,    valor_total_esperado: 123.20 },\r\n  { volumes: 10, desconto_esperado: 0.05, valor_total_esperado: 117.04 },\r\n  { volumes: 19, desconto_esperado: 0.05, valor_total_esperado: 117.04 },\r\n  { volumes: 20, desconto_esperado: 0.10, valor_total_esperado: 110.88 },\r\n  { volumes: 49, desconto_esperado: 0.10, valor_total_esperado: 110.88 },\r\n  { volumes: 50, desconto_esperado: 0.15, valor_total_esperado: 104.72 },\r\n  { volumes: 51, desconto_esperado: 0.15, valor_total_esperado: 104.72 }\r\n];\r\n\r\nfunction rodarCaso(index) {\r\n  if (index >= casos.length) {\r\n    return;\r\n  }\r\n\r\n  const caso = casos[index];\r\n  const body = {\r\n    cliente: `Borda volume ${caso.volumes}`,\r\n    peso_kg: 50.5,\r\n    volumes: caso.volumes,\r\n    uf_origem: 'SP',\r\n    uf_destino: 'SP'\r\n  };\r\n\r\n  pm.sendRequest({\r\n    url: `${pm.environment.get(\"url_base_v2\")}/api/cotacoes`,\r\n    method: 'POST',\r\n    header: { 'Content-Type': 'application/json' },\r\n    body: { mode: 'raw', raw: JSON.stringify(body) }\r\n  }, function (err, resV2) {\r\n    if (err) { console.error(\"Erro:\", err); return rodarCaso(index + 1); }\r\n\r\n    const json = resV2.json();\r\n\r\n    pm.test(`volumes ${caso.volumes} - desconto esperado (${caso.desconto_esperado})`, function () {\r\n      pm.expect(json.desconto).to.eql(caso.desconto_esperado);\r\n    });\r\n\r\n    pm.test(`volumes ${caso.volumes} - valor_total esperado (${caso.valor_total_esperado})`, function () {\r\n      pm.expect(json.valor_total).to.eql(caso.valor_total_esperado);\r\n    });\r\n\r\n    rodarCaso(index + 1);\r\n  });\r\n}\r\n\r\nrodarCaso(0);"
                 ]
               }
             }
           ],
           "request": {
-            "method": "GET",
+            "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"cliente\" : \"cliente teste\", \r\n    \"peso_kg\" : 10, \r\n    \"volumes\" : 20,\r\n    \"uf_origem\" : \"SP\", \r\n    \"uf_destino\" : \"RS\" \r\n}",
+              "raw": "{ \"cliente\": \"teste\", \"peso_kg\": 50.5, \"volumes\": 1, \"uf_origem\": \"SP\", \"uf_destino\": \"SP\" }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -79,13 +79,13 @@
               }
             },
             "url": {
-              "raw": "{{url_base_v1}}/cotacoes/10",
+              "raw": "{{url_base_v2}}/api/cotacoes",
               "host": [
-                "{{url_base_v1}}"
+                "{{url_base_v2}}"
               ],
               "path": [
-                "cotacoes",
-                "10"
+                "api",
+                "cotacoes"
               ]
             }
           },

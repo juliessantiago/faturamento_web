@@ -44,8 +44,10 @@ de response, estrutura da response, tipos de dados
      leitura de código, automação. E por que essa escolha para essa área. -->
 
 ## O que decidi NÃO testar
+
 --> Devido ao relativo curto tempo para análise, criação e execução dos testes, decidi não testar a usabilidade e a experiência do usuário. 
 --> Também tomei a decisão de não realizar, no primeiro momento, teste de carga nas rotas de criação de cotação e faturamento. 
+
 
 
 | Ficou de fora | Por quê | Risco que estou aceitando |
