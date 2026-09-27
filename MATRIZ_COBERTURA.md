@@ -1,5 +1,5 @@
 # Matriz de cobertura
-
+--> Observação: relatórios  dos resultados dos testes realizados encontram-se na pasta Bug Report 
 ## Como ler esta matriz
 
 "Automatizado?":  Sim |  Não (manual) 
@@ -44,6 +44,25 @@ Antes de fazer a análise da tabela, ler a descrição dos termos usados abaixo:
 | Fatura única por cotação | README | |  |
 | Desconto por volume | SPEC | | |
 | Contrato das rotas da API | README |  | |
+
+
+## :1234: Tabela de Análise de valor limite - peso (valor base)
+
+| Peso | Valor base correspondente |  Situação |
+|---|---|---
+| Abaixo de 1kg | R$ 25,00 |Testado|  |
+|  0.99kg| R$ 25,00 | |  |
+|  10kg  | R$ 25,00  | | |
+|  10.001kg| R$ 60,00 | |  |
+|  50kg| R$ 60,00 | |  |
+|  50.001kg| R$ 110,00 | |  |
+|  100kg| R$ 110,00 | |  |
+|  100.001kg| R$ 180,00 | |  |
+|  1000kg| R$ 180,00 | |  |
+
+
+
+
 
 ## Lacunas conhecidas
 
