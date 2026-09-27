@@ -7,11 +7,12 @@
   "scripts": {
     "start:v1": "node server.js v1",
     "start:v2": "node server.js v2",
-    "test:postman:v1": "newman run postman/collection.json -e postman/environment-v1.json",
-    "test:postman:v2": "newman run postman/collection.json -e postman/environment-v2.json",
-    "test:postman": "npm run test:postman:v1 && npm run test:postman:v2"
+    "test:borda-peso": "newman run postman/collection.json -e postman/environment.json -d postman/casos-borda-peso.csv --folder \"Regressão - borda de peso\""
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "newman": "^6.2.2"
   }
 }
