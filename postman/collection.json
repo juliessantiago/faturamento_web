@@ -1,0 +1,87 @@
+{
+  "info": {
+    "_postman_id": "8aed9c7b-02ed-4fa5-8c5d-783b7e2b7dae",
+    "name": "Testes de Regressão",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12417560",
+    "_collection_link": "https://go.postman.co/collection/12417560-8aed9c7b-02ed-4fa5-8c5d-783b7e2b7dae?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "valor_borda_peso",
+      "item": [
+        {
+          "name": "valores_borda_peso",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const casos = [\r\n  { peso_kg: 0.5,   valor_base_esperado: 25 },\r\n  { peso_kg: 0.99,  valor_base_esperado: 25 },\r\n  { peso_kg: 10,    valor_base_esperado: 25 },\r\n  { peso_kg: 10.01, valor_base_esperado: 60 },\r\n  { peso_kg: 50,    valor_base_esperado: 60 },\r\n  { peso_kg: 50.01, valor_base_esperado: 110 },\r\n  { peso_kg: 100,   valor_base_esperado: 110 },\r\n  { peso_kg: 100.01,valor_base_esperado: 180 },\r\n  { peso_kg: 1000,  valor_base_esperado: 180 }\r\n];\r\n\r\n(async () => {\r\n  for (const caso of casos) {\r\n    const body = {\r\n      cliente: `Borda ${caso.peso_kg}kg`,\r\n      peso_kg: caso.peso_kg,\r\n      volumes: 5,\r\n      uf_origem: 'SP',\r\n      uf_destino: 'SP'\r\n    };\r\n\r\n    // Cria na v1\r\n    const resV1 = await pm.sendRequest({\r\n      url: `${pm.environment.get(\"base_url_v1\")}/api/cotacoes`,\r\n      method: 'POST',\r\n      header: { 'Content-Type': 'application/json' },\r\n      body: { mode: 'raw', raw: JSON.stringify(body) }\r\n    });\r\n    const jsonV1 = resV1.json();\r\n\r\n    pm.test(`v1 (peso ${caso.peso_kg}kg) - valor_base esperado`, function () {\r\n      pm.expect(jsonV1.valor_base).to.eql(caso.valor_base_esperado);\r\n    });\r\n\r\n    // Cria a mesma na v2\r\n    const resV2 = await pm.sendRequest({\r\n      url: `${pm.environment.get(\"base_url_v2\")}/api/cotacoes`,\r\n      method: 'POST',\r\n      header: { 'Content-Type': 'application/json' },\r\n      body: { mode: 'raw', raw: JSON.stringify(body) }\r\n    });\r\n    const jsonV2 = resV2.json();\r\n\r\n    pm.test(`v2 (peso ${caso.peso_kg}kg) - valor_base esperado`, function () {\r\n      pm.expect(jsonV2.valor_base).to.eql(caso.valor_base_esperado);\r\n    });\r\n\r\n    pm.test(`valor_base v1×v2 idêntico (peso ${caso.peso_kg}kg)`, function () {\r\n      pm.expect(jsonV2.valor_base).to.eql(jsonV1.valor_base);\r\n    });\r\n\r\n    pm.test(`multiplicador v1×v2 idêntico (peso ${caso.peso_kg}kg)`, function () {\r\n      pm.expect(jsonV2.multiplicador).to.eql(jsonV1.multiplicador);\r\n    });\r\n  }\r\n})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{url_base_v1}}/cotacoes",
+              "host": [
+                "{{url_base_v1}}"
+              ],
+              "path": [
+                "cotacoes"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "multiplicador",
+      "item": [
+        {
+          "name": "valor-base-e-multiplicador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const jsonV1 = pm.response.json();\r\n\r\npm.test(\"v1 respondeu com sucesso\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\n// Busca a v2 pra comparar, usando a mesma cotação (id 10)\r\npm.sendRequest({\r\n    url: `${pm.environment.get(\"url_base_v2\")}/cotacoes/10`,\r\n    method: 'GET'\r\n}, function (err, resV2) {\r\n    if (err) {\r\n        console.error(err);\r\n        return;\r\n    }\r\n\r\n    const jsonV2 = resV2.json();\r\n\r\n    pm.test(\"valor_base da v2 é idêntico ao da v1\", function () {\r\n        pm.expect(jsonV2.valor_base).to.eql(jsonV1.valor_base);\r\n    });\r\n\r\n    pm.test(\"multiplicador da v2 é idêntico ao da v1\", function () {\r\n        pm.expect(jsonV2.multiplicador).to.eql(jsonV1.multiplicador);\r\n    });\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"cliente\" : \"cliente teste\", \r\n    \"peso_kg\" : 10, \r\n    \"volumes\" : 20,\r\n    \"uf_origem\" : \"SP\", \r\n    \"uf_destino\" : \"RS\" \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_base_v1}}/cotacoes/10",
+              "host": [
+                "{{url_base_v1}}"
+              ],
+              "path": [
+                "cotacoes",
+                "10"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
