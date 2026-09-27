@@ -11,14 +11,14 @@
       "name": "valor_borda_peso",
       "item": [
         {
-          "name": "valores_borda_peso",
+          "name": "valor_borda_peso",
           "event": [
             {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "const casos = [\r\n  { peso_kg: 0.5,   valor_base_esperado: 25 },\r\n  { peso_kg: 0.99,  valor_base_esperado: 25 },\r\n  { peso_kg: 10,    valor_base_esperado: 25 },\r\n  { peso_kg: 10.01, valor_base_esperado: 60 },\r\n  { peso_kg: 50,    valor_base_esperado: 60 },\r\n  { peso_kg: 50.01, valor_base_esperado: 110 },\r\n  { peso_kg: 100,   valor_base_esperado: 110 },\r\n  { peso_kg: 100.01,valor_base_esperado: 180 },\r\n  { peso_kg: 1000,  valor_base_esperado: 180 }\r\n];\r\n\r\n(async () => {\r\n  for (const caso of casos) {\r\n    const body = {\r\n      cliente: `Borda ${caso.peso_kg}kg`,\r\n      peso_kg: caso.peso_kg,\r\n      volumes: 5,\r\n      uf_origem: 'SP',\r\n      uf_destino: 'SP'\r\n    };\r\n\r\n    // Cria na v1\r\n    const resV1 = await pm.sendRequest({\r\n      url: `${pm.environment.get(\"base_url_v1\")}/api/cotacoes`,\r\n      method: 'POST',\r\n      header: { 'Content-Type': 'application/json' },\r\n      body: { mode: 'raw', raw: JSON.stringify(body) }\r\n    });\r\n    const jsonV1 = resV1.json();\r\n\r\n    pm.test(`v1 (peso ${caso.peso_kg}kg) - valor_base esperado`, function () {\r\n      pm.expect(jsonV1.valor_base).to.eql(caso.valor_base_esperado);\r\n    });\r\n\r\n    // Cria a mesma na v2\r\n    const resV2 = await pm.sendRequest({\r\n      url: `${pm.environment.get(\"base_url_v2\")}/api/cotacoes`,\r\n      method: 'POST',\r\n      header: { 'Content-Type': 'application/json' },\r\n      body: { mode: 'raw', raw: JSON.stringify(body) }\r\n    });\r\n    const jsonV2 = resV2.json();\r\n\r\n    pm.test(`v2 (peso ${caso.peso_kg}kg) - valor_base esperado`, function () {\r\n      pm.expect(jsonV2.valor_base).to.eql(caso.valor_base_esperado);\r\n    });\r\n\r\n    pm.test(`valor_base v1×v2 idêntico (peso ${caso.peso_kg}kg)`, function () {\r\n      pm.expect(jsonV2.valor_base).to.eql(jsonV1.valor_base);\r\n    });\r\n\r\n    pm.test(`multiplicador v1×v2 idêntico (peso ${caso.peso_kg}kg)`, function () {\r\n      pm.expect(jsonV2.multiplicador).to.eql(jsonV1.multiplicador);\r\n    });\r\n  }\r\n})();"
+                  "const casos = [\r\n  { peso_kg: 0.5,   valor_base_esperado: 25 },\r\n  { peso_kg: 0.99,  valor_base_esperado: 25 },\r\n  { peso_kg: 10,    valor_base_esperado: 25 },\r\n  { peso_kg: 10.01, valor_base_esperado: 60 },\r\n  { peso_kg: 50,    valor_base_esperado: 60 },\r\n  { peso_kg: 50.01, valor_base_esperado: 110 },\r\n  { peso_kg: 100,   valor_base_esperado: 110 },\r\n  { peso_kg: 100.01,valor_base_esperado: 180 },\r\n  { peso_kg: 1000,  valor_base_esperado: 180 }\r\n];\r\n\r\nfunction rodarCaso(index) {\r\n  if (index >= casos.length) {\r\n    return; // acabou a lista, encerra\r\n  }\r\n\r\n  const caso = casos[index];\r\n  const body = {\r\n    cliente: `Borda ${caso.peso_kg}kg`,\r\n    peso_kg: caso.peso_kg,\r\n    volumes: 5,\r\n    uf_origem: 'SP',\r\n    uf_destino: 'SP'\r\n  };\r\n\r\n  pm.sendRequest({\r\n    url: `${pm.environment.get(\"url_base_v1\")}/api/cotacoes`,\r\n    method: 'POST',\r\n    header: { 'Content-Type': 'application/json' },\r\n    body: { mode: 'raw', raw: JSON.stringify(body) }\r\n  }, function (err1, resV1) {\r\n    if (err1) { console.error(\"Erro v1:\", err1); return rodarCaso(index + 1); }\r\n\r\n    const jsonV1 = resV1.json();\r\n\r\n    pm.test(`v1 (peso ${caso.peso_kg}kg) - valor_base esperado`, function () {\r\n      pm.expect(jsonV1.valor_base).to.eql(caso.valor_base_esperado);\r\n    });\r\n\r\n    pm.sendRequest({\r\n      url: `${pm.environment.get(\"url_base_v2\")}/api/cotacoes`,\r\n      method: 'POST',\r\n      header: { 'Content-Type': 'application/json' },\r\n      body: { mode: 'raw', raw: JSON.stringify(body) }\r\n    }, function (err2, resV2) {\r\n      if (err2) { console.error(\"Erro v2:\", err2); return rodarCaso(index + 1); }\r\n\r\n      const jsonV2 = resV2.json();\r\n\r\n      pm.test(`v2 (peso ${caso.peso_kg}kg) - valor_base esperado`, function () {\r\n        pm.expect(jsonV2.valor_base).to.eql(caso.valor_base_esperado);\r\n      });\r\n\r\n      pm.test(`valor_base v1×v2 idêntico (peso ${caso.peso_kg}kg)`, function () {\r\n        pm.expect(jsonV2.valor_base).to.eql(jsonV1.valor_base);\r\n      });\r\n\r\n      pm.test(`multiplicador v1×v2 idêntico (peso ${caso.peso_kg}kg)`, function () {\r\n        pm.expect(jsonV2.multiplicador).to.eql(jsonV1.multiplicador);\r\n      });\r\n\r\n      rodarCaso(index + 1); // só avança pro próximo caso depois de terminar este\r\n    });\r\n  });\r\n}\r\n\r\nrodarCaso(0);"
                 ]
               }
             }
@@ -26,12 +26,22 @@
           "request": {
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"cliente\": \"cliente teste\",\r\n \"peso_kg\": 1, \r\n \"volumes\": 1, \r\n \"uf_origem\": \"SP\", \r\n \"uf_destino\": \"SP\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{url_base_v1}}/cotacoes",
+              "raw": "{{url_base_v1}}/api/cotacoes",
               "host": [
                 "{{url_base_v1}}"
               ],
               "path": [
+                "api",
                 "cotacoes"
               ]
             }
@@ -44,7 +54,7 @@
       "name": "multiplicador",
       "item": [
         {
-          "name": "valor-base-e-multiplicador",
+          "name": "multiplicador",
           "event": [
             {
               "listen": "test",
