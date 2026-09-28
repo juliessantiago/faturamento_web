@@ -2,7 +2,7 @@ Teste QA
 
 :robot:
 
-##Antes de tudo... 
+## :eight_pointed_black_star: Antes de tudo... 
 
 ### Dependências e execução dos testes
 
