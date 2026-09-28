@@ -21,6 +21,8 @@ Para executar uma pasta específica da collection:
 
 No lugar de "nome_da_pasta", coloque o nome da pasta da collection que gostaria de executar. 
 
+### :pushpin: Dica: ler o arquivo readme da pasta REGRESSAO  ###
+
 
 ## :eight_pointed_black_star: Objetivo
 
