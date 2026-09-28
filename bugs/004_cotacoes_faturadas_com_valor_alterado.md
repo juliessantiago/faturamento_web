@@ -59,3 +59,7 @@ GET /api/cotacoes/10 (v2)
 GET /api/faturas?id_cotacao=10 (v1 e v2, idêntico)
 [ { "id": 10, "id_cotacao": 10, "cliente": "Indústria Horizonte", "emitida_em": "2026-06-11" } ]
 ```
+
+--> Foi criado um teste automatizado para verificar essas diferenças. Rodar:
+
+**npx newman run postman/collection.json -e postman/environment.json --folder impacto_carga_inicial**
