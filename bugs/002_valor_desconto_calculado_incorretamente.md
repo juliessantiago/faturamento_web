@@ -26,6 +26,11 @@ Content-Type: application/json
 2. Ler os campos `desconto` e `valor_total` da resposta de cada criação.
 3. Comparar com a tabela de desconto da especificação (seção 2).
 
+ **Como rodar teste automatizado**
+
+npx newman run postman/collection.json -e postman/environment.json --folder valor_borda_desconto
+
+
 ## Resultado esperado 
 
 Conforme a tabela na SPEC-desconto-por-volume.md: 10 a 19 volumes → 5%; 20 a 49 → 10%; 50 ou mais → 15%. 
