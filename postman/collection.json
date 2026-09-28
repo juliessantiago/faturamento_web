@@ -92,6 +92,49 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "arredondamento_desconto",
+      "item": [
+        {
+          "name": "arredondamento_desconto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const casos = [\r\n  // Casos com terceira casa decimal (arredondar x truncar)\r\n  { peso_kg: 34,   uf_origem: 'RS', uf_destino: 'SP', volumes: 11, valor_base: 60,  multiplicador: 1.9, desconto: 0.05, valor_total_esperado: '121.30' },\r\n  { peso_kg: 34,   uf_origem: 'SP', uf_destino: 'MG', volumes: 11, valor_base: 60,  multiplicador: 1.4, desconto: 0.05, valor_total_esperado: '89.38' },\r\n  { peso_kg: 50.5, uf_origem: 'SP', uf_destino: 'MG', volumes: 12, valor_base: 110, multiplicador: 1.4, desconto: 0.05, valor_total_esperado: '163.86' },\r\n  { peso_kg: 120,  uf_origem: 'SP', uf_destino: 'MG', volumes: 15, valor_base: 180, multiplicador: 1.4, desconto: 0.05, valor_total_esperado: '268.13' },\r\n  { peso_kg: 120,  uf_origem: 'RS', uf_destino: 'SP', volumes: 15, valor_base: 180, multiplicador: 1.9, desconto: 0.05, valor_total_esperado: '363.89' },\r\n  { peso_kg: 120,  uf_origem: 'SP', uf_destino: 'MG', volumes: 25, valor_base: 180, multiplicador: 1.4, desconto: 0.10, valor_total_esperado: '254.02' },\r\n  { peso_kg: 50.5, uf_origem: 'RS', uf_destino: 'SP', volumes: 60, valor_base: 110, multiplicador: 1.9, desconto: 0.15, valor_total_esperado: '198.97' },\r\n  // Casos que devem cair pra baixo\r\n  { peso_kg: 34,   uf_origem: 'SP', uf_destino: 'MG', volumes: 25, valor_base: 60,  multiplicador: 1.4, desconto: 0.10, valor_total_esperado: '84.67' },\r\n  { peso_kg: 120,  uf_origem: 'RS', uf_destino: 'SP', volumes: 60, valor_base: 180, multiplicador: 1.9, desconto: 0.15, valor_total_esperado: '325.58' },\r\n  // Casos com total terminando em zero (formato de duas casas)\r\n  { peso_kg: 5,    uf_origem: 'SP', uf_destino: 'SP', volumes: 5,  valor_base: 25,  multiplicador: 1.0, desconto: 0,    valor_total_esperado: '28.00' },\r\n  { peso_kg: 5,    uf_origem: 'SP', uf_destino: 'SP', volumes: 11, valor_base: 25,  multiplicador: 1.0, desconto: 0.05, valor_total_esperado: '26.60' }\r\n];\r\n\r\nfunction rodarCaso(index) {\r\n  if (index >= casos.length) {\r\n    return;\r\n  }\r\n\r\n  const caso = casos[index];\r\n  const rotulo = `${caso.peso_kg}kg ${caso.uf_origem}→${caso.uf_destino} ${caso.volumes}vol`;\r\n  const body = {\r\n    cliente: `Arredondamento ${rotulo}`,\r\n    peso_kg: caso.peso_kg,\r\n    volumes: caso.volumes,\r\n    uf_origem: caso.uf_origem,\r\n    uf_destino: caso.uf_destino\r\n  };\r\n\r\n  pm.sendRequest({\r\n    url: `${pm.environment.get(\"url_base_v2\")}/api/cotacoes`,\r\n    method: 'POST',\r\n    header: { 'Content-Type': 'application/json' },\r\n    body: { mode: 'raw', raw: JSON.stringify(body) }\r\n  }, function (err, resV2) {\r\n    if (err) { console.error(\"Erro:\", err); return rodarCaso(index + 1); }\r\n\r\n    const json = resV2.json();\r\n\r\n    // Texto cru do valor_total, do jeito que a API mandou (sem o parse do JSON)\r\n    const textoCru = resV2.text();\r\n    const totalCru = (textoCru.match(/\"valor_total\"\\s*:\\s*\"?(-?\\d+(?:\\.\\d+)?)\"?/) || [])[1];\r\n\r\n    // Premissas: se alguma falhar, o problema NÃO é arredondamento\r\n    pm.test(`[${rotulo}] premissa - valor_base ${caso.valor_base}`, function () {\r\n      pm.expect(json.valor_base).to.eql(caso.valor_base);\r\n    });\r\n\r\n    pm.test(`[${rotulo}] premissa - multiplicador ${caso.multiplicador}`, function () {\r\n      pm.expect(json.multiplicador).to.eql(caso.multiplicador);\r\n    });\r\n\r\n    pm.test(`[${rotulo}] premissa - desconto ${caso.desconto}`, function () {\r\n      pm.expect(json.desconto).to.eql(caso.desconto);\r\n    });\r\n\r\n    // Regra 1: o valor está arredondado corretamente (compara o número)\r\n    pm.test(`[${rotulo}] arredondamento - valor_total ${caso.valor_total_esperado}`, function () {\r\n      pm.expect(json.valor_total).to.eql(Number(caso.valor_total_esperado));\r\n    });\r\n\r\n    // Regra 2: o valor vem com exatamente duas casas decimais (compara o texto)\r\n    pm.test(`[${rotulo}] formato - duas casas decimais, esperado ${caso.valor_total_esperado} (veio: ${totalCru})`, function () {\r\n      pm.expect(String(totalCru)).to.eql(caso.valor_total_esperado);\r\n    });\r\n\r\n    rodarCaso(index + 1);\r\n  });\r\n}\r\n\r\nrodarCaso(0);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"cliente\": \"Borda 1000kg\", \r\n    \"peso_kg\": 1000, \r\n    \"volumes\": 5,\r\n    \"uf_origem\": \"SP\",\r\n    \"uf_destino\": \"SP\" \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_base_v2}}/api/cotacoes",
+              "host": [
+                "{{url_base_v2}}"
+              ],
+              "path": [
+                "api",
+                "cotacoes"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
