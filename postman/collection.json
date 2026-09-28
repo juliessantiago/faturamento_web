@@ -178,6 +178,49 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "post_cotacao_request_campos_ausentes",
+      "item": [
+        {
+          "name": "post_cotacao_request_campos_ausentes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const url = pm.request.url.toString();\r\n\r\nconst camposObrigatorios = [\r\n    \"cliente\",\r\n    \"peso_kg\",\r\n    \"volumes\",\r\n    \"uf_origem\",\r\n    \"uf_destino\"\r\n];\r\n\r\nconst payloadValido = {\r\n    cliente: \"Teste QA\",\r\n    peso_kg: 10,\r\n    volumes: 1,\r\n    uf_origem: \"SP\",\r\n    uf_destino: \"RJ\"\r\n};\r\n\r\ncamposObrigatorios.forEach(function (campo) {\r\n\r\n    const payloadInvalido = { ...payloadValido };\r\n\r\n    delete payloadInvalido[campo];\r\n\r\n    pm.sendRequest({\r\n        url: url,\r\n        method: \"POST\",\r\n        header: {\r\n            \"Content-Type\": \"application/json\"\r\n        },\r\n        body: {\r\n            mode: \"raw\",\r\n            raw: JSON.stringify(payloadInvalido)\r\n        }\r\n    }, function (err, response) {\r\n\r\n        pm.test(`Campo obrigatório ausente: ${campo}`, function () {\r\n\r\n            pm.expect(err).to.equal(null);\r\n\r\n            pm.expect(response.code).to.equal(422);\r\n\r\n            pm.expect(response.headers\r\n                .get(\"Content-Type\"))\r\n                .to.include(\"application/json\");\r\n\r\n            const body = response.json();\r\n\r\n            pm.expect(body).to.have.property(\"erro\");\r\n\r\n            pm.expect(body.erro)\r\n                .to.be.a(\"string\")\r\n                .and.not.empty;\r\n        });\r\n    });\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"cliente\": \"teste campos ausentes\", \r\n    \"peso_kg\": 10, \r\n    \"volumes\": 1,\r\n    \"uf_origem\": \"SP\",\r\n    \"uf_destino\": \"SP\" \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_base_v2}}/api/cotacoes",
+              "host": [
+                "{{url_base_v2}}"
+              ],
+              "path": [
+                "api",
+                "cotacoes"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
