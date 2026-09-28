@@ -2,6 +2,29 @@ Teste QA
 
 :robot:
 
+##Antes de tudo... 
+
+### Dependências e execução dos testes
+
+Para executar os testes automatizados, é necessário ter o **Node.js v18 ou superior** instalado.
+
+Após clonar o projeto, instale as dependências com:
+
+```bash
+npm install
+```
+
+Meu projeto utiliza o **Newman** para execução automatizada das collections do Postman.
+
+Para executar uma pasta específica da collection:
+
+```bash
+npx newman run postman/collection.json -e postman/environment.json --folder nome_da_pasta
+```
+
+No lugar de "nome_da_pasta", coloque o nome da pasta da collection que gostaria de executar. 
+
+
 ## Objetivo
 
 Este projeto tem como objetivo avaliar a qualidade da nova versão do sistema de **Cotação e Faturamento**, considerando os requisitos existentes, a nova funcionalidade implementada e os impactos gerados pela alteração.
@@ -72,6 +95,7 @@ A decisão de release foi realizada após a análise conjunta de:
 A justificativa detalhada da decisão estão disponíveis no arquivo:
 
 **RELEASE_DECISION.md**
+
 
 ## Considerações finais
 
