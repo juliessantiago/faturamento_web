@@ -102,5 +102,5 @@ Obs.: BUG 005 refere-se a ausencia do valor da fatura na rota GET /api/faturas?i
 
 **Exemplo de resposta do Newman**
 
-![screenshot da resposta no terminal](../bugs/assets/detalhe_cotacao_arredondamento_2.png)
+![screenshot da resposta no terminal](../bugs/assets/resultados_newman.png)
 
