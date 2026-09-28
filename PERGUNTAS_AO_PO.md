@@ -83,5 +83,31 @@ Para prosseguimento dos testes, adotei a interpretação de que o sistema deve c
 
 O atual comportamento da v2 nesse quesito influenciou diretamente na decisão do go/no-go, mas não impediu que eu tomasse uma deliberação.  
 
+### 3. Valor de cotações já faturadas foi alterado 
+
+**Onde apareceu:** 
+Versão 2 da API, com a nova funcionalidade
+
+**O que está ambíguo:**
+
+A alteração de valor de cotação já faturada é um bug evidenciado e documentado (BUG 004): 29 das 60 cotações tiveram seu valor alterado. No entanto, não pude confirmar se esses valores exibidos geraram novas faturas. Pude confirmar que o sistema bloqueia, de forma correta, refaturamento de cotação(Resposta: 422-"cotação já faturada"). Porém, isso não garante que as cotações já existentes na carga inicial de dados foram faturadas novamente (60 cotações). 
+
+**O que a v1 faz hoje:**
+No caso da v1 não há influencia desse comportamento.
+
+**O que a v2 faz:**
+Há alteração do valor de cotações já faturadas, mas sem confirmação de geração de novas faturas para as mesmas. 
+
+**Por que isso importa:**
+A geração de faturas para cotações que já foram faturadas gera uma cobrança duplicada ao cliente. 
+
+**Interpretação que adotei enquanto não há resposta:**
+
+Para prosseguimento dos testes, como sistema bloqueou o refaturamento de forma correta, considerei que não houve uma recobrança. Para documentação adicionei uma observação no arquivo RELEASE.DECISION.MD. 
+
+**Bloqueia o go/no-go?** 
+
+Considerando a interpretação que tomei, no momento não bloqueia o go/no-go. 
+
 ## Decisões que tomei sem perguntar
 Embora não se tratem de ambiguidades, decidi não realizar automatizados do contrato da API (além da rota de criação de cotações) por analisar o tempo disponível antes da data da possível release. Tomei a decisão como QA, também, de não realizar teste específico de arredondamento quando o caso é 0.xx5, o que envolveria um teste unitário. 
