@@ -1,8 +1,7 @@
-Teste QA 
+## :robot: Teste QA 
 
-:robot:
 
-## :eight_pointed_black_star: Antes de tudo... 
+### :eight_pointed_black_star: Antes de tudo... 
 
 ### Dependências e execução dos testes
 
@@ -10,22 +9,20 @@ Para executar os testes automatizados, é necessário ter o **Node.js v18 ou sup
 
 Após clonar o projeto, instale as dependências com:
 
-```bash
-npm install
-```
+
+**npm install**
+
 
 Meu projeto utiliza o **Newman** para execução automatizada das collections do Postman.
 
 Para executar uma pasta específica da collection:
 
-```bash
-npx newman run postman/collection.json -e postman/environment.json --folder nome_da_pasta
-```
+***npx newman run postman/collection.json -e postman/environment.json --folder nome_da_pasta**
 
 No lugar de "nome_da_pasta", coloque o nome da pasta da collection que gostaria de executar. 
 
 
-## Objetivo
+## :eight_pointed_black_star: Objetivo
 
 Este projeto tem como objetivo avaliar a qualidade da nova versão do sistema de **Cotação e Faturamento**, considerando os requisitos existentes, a nova funcionalidade implementada e os impactos gerados pela alteração.
 
@@ -40,7 +37,7 @@ A análise foi realizada por meio de:
 * Identificação, análise e documentação de inconsistências;
 * Avaliação dos riscos para a decisão de release.
 
-## Tecnologias e ferramentas
+##  :eight_pointed_black_star: Tecnologias e ferramentas
 
 As principais tecnologias e ferramentas que utilizei foram:
 
@@ -51,7 +48,7 @@ As principais tecnologias e ferramentas que utilizei foram:
 * **Markdown** — documentação dos testes, resultados e decisão de release.
 
 
-### Testes manuais
+### :eight_pointed_black_star: Testes manuais
 
 Foram realizados testes exploratórios e funcionais para verificar:
 
@@ -63,7 +60,7 @@ Foram realizados testes exploratórios e funcionais para verificar:
 * Comportamentos de fronteira;
 * Consistência das informações apresentadas na API e na interface.
 
-### Testes automatizados
+### :eight_pointed_black_star:  Testes automatizados
 
 Foram criados testes automatizados para validar principalmente o comportamento da API, incluindo:
 
@@ -80,7 +77,7 @@ A execução das coleções pode ser realizada utilizando o **Newman**, permitin
 Collection dos testes automatizados se encontra na pasta POSTMAN e não em REGRESSAO por uma questão de organização do código.
 
 
-## Decisão de Release
+##  :eight_pointed_black_star: Decisão de Release
 
 A decisão de release foi realizada após a análise conjunta de:
 
