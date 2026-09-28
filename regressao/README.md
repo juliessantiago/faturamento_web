@@ -1,7 +1,6 @@
 # Suíte de regressão
 
-<!-- Este diretório é entregável. Coloque aqui a sua suíte automatizada e
-     preencha as seções abaixo. -->
+--> :bangbang: Atenção: para melhor organização do projeto, todos os testes estão dentro da pasta POSTMAN. 
 
 ## Como rodar
 
@@ -50,6 +49,8 @@ comparar o comportamento entre as versões.
 <!-- E por quê. -->
 
 ## Saída esperada
+
+-->Estrutura da resposta do Newman: 
 
 <!-- Cole a saída da suíte rodando, para quem avaliar saber o que esperar. -->
 
