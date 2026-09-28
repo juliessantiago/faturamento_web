@@ -1,4 +1,6 @@
-# [004] Cotação já faturada exibe valor recalculado 
+## [004] Cotação já faturada exibe valor recalculado ##
+
+*Observação: Existe uma dúvida quanto a esse comportamento registrada no arquivo PERGUNTAS_AO_PO.MD. Leia, por favor. 
 
 **Severidade:** Alta
 
@@ -17,11 +19,10 @@
 3. Comparar os campos faturada, desconto e valor_total das duas respostas.
 4. Consultar a fatura da cotação: **GET /api/faturas?id_cotacao=10** (nas duas versões).
 
-## Resultado esperado (e a fonte: README, spec ou changelog)
+## Resultado esperado
 
 SPEC-desconto-por-volume.md, seção 5: "A política não é retroativa. Cotações já faturadas mantêm o valor pelo qual foram faturadas; não há recálculo nem nota de ajuste." A cotação 10 já estava faturada quando a política de desconto foi criada, então deveria manter o valor da v1: desconto: 0 e valor_total: 127.68 (60 × 1,9 × 1,12).
 
-Limitação: o valor efetuvo da fatura não pôde ser lido na API, porque as faturas da carga inicial estão vindo sem o campo valor (ver BUG-005).
 
 ## Resultado obtido
 

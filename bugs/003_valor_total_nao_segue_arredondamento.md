@@ -1,4 +1,4 @@
-# [003] valor_total com desconto não segue o arredondamento comercial
+## [003] valor_total com desconto não segue o arredondamento comercial ##
 
 **Severidade:** Média
 

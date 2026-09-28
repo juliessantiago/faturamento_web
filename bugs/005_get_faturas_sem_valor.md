@@ -1,4 +1,4 @@
-# [005]  Rota  GET /api/faturas não retorna valor da cotação (fatura) 
+## [005]  Rota  GET /api/faturas não retorna valor da cotação (fatura) ##
 
 --> **Erro ocorre para cotações da carga inicial, em ambas as versões**
 
@@ -23,9 +23,9 @@ Para comparação, uma cotação criada e faturada durante o teste (id 201, 34 k
 
 ## Resultado esperado 
 
-Na descrição de "Contrato da API": a fatura é descrita com os campos `id`, `id_cotacao`, `cliente`, `valor` e `emitida_em`, e `GET /api/faturas` responde com um array de faturas. O README também diz que a fatura é emitida pelo valor final vigente da cotação. Entende-se que o valor final fica registrado.
+Na descrição de "Contrato da API": a fatura é descrita com os campos `id`, `id_cotacao`, `cliente`, `valor` e `emitida_em`, e `GET /api/faturas` responde com um array de faturas. O README também diz que a fatura é emitida pelo valor final vigente da cotação.
 
-Observação de leitura: o README mostra o formato completo da fatura junto da rota de emissão (`POST .../faturar`), e a listagem é descrita apenas como "array de faturas". Considerei que a listagem deve trazer o mesmo formato, porém, deixei registrado no arquivo Perguntas_ao_PO.md 
+Observação de leitura: o README mostra o formato completo da fatura junto da rota de emissão (`POST .../faturar`), e a listagem é descrita apenas como "array de faturas". Considerei, em uma decisão como QA, que a listagem deve trazer o mesmo formato.
 
 ## Resultado obtido
 
