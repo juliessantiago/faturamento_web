@@ -48,6 +48,8 @@ de response, estrutura da response, tipos de dados
 --> Devido ao relativo curto tempo para análise, criação e execução dos testes, decidi não testar a usabilidade e a experiência do usuário. 
 --> Também tomei a decisão de não realizar, no primeiro momento, teste de carga nas rotas de criação de cotação e faturamento. 
 
+--> O limite exato do arredondamento comercial (terceira casa decimal igual a 5) não pôde ser exercitado via API, porque nenhuma combinação de faixa de peso, multiplicador de rota e desconto produz esse valor. Foram testados os valores imediatamente abaixo (terceira casa 4) e acima (terceira casa 6) do limite. Risco residual: baixo. Só seria detectável com teste unitário direto na função de arredondamento.
+
 
 
 | Ficou de fora | Por quê | Risco que estou aceitando |
