@@ -63,6 +63,9 @@ O cliente é cobrado de 1 a 2 centavos a menos nos casos testados (o oposto dos 
 
 Exemplo de teste manual que me levou a verificar o cálculo: cotação de id 10 (RS→SP, 34kg, 11 volumes): valor esperado 121,30, valor na v2 121,29.
 
+--> Observação: erro de arredondamento chega ao faturamento: 
+Cotação criada: 34 kg RS→SP 11 vol faturada na v2: fatura emitida com valor 121,29 (esperado 121,30) 
+
 ## Evidência
 
 Suíte automatizada via Postman, pasta "arredondamento_desconto". 
