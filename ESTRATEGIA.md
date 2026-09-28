@@ -1,72 +1,58 @@
 # Estratégia de teste
 
-<!-- Este arquivo é entregável. Preencha as seções abaixo. -->
-
 ## Contexto e objetivo da validação
 
---> A atual validação tem como objetivo trazer embasamento para liberação da nova versão, não trazendo riscos financeiros e de negócio. A principal pergunta é: "Podemos subir a nova versão de forma segura e sem perdas de funcionalidade?"
-
-
-<!-- Em duas ou três frases: o que está em jogo nesta validação e qual pergunta
-     você precisa responder até sexta. -->
+A v2 traz o desconto por volume e mudanças de payload. Esta validação existe para embasar a decisão de liberar (ou não) a v2 sem gerar risco financeiro nem de negócio. A pergunta que precisei responder: **"Podemos subir a v2 com segurança e sem causar impacto financeiro?"**
 
 ## Análise de risco
 
 
-<!-- Quais áreas do sistema concentram o maior prejuízo se falharem, e por quê.
-     Ordene por risco, não por facilidade de teste. -->
-
 | Área | O que pode dar errado | Impacto se acontecer | Probabilidade | Prioridade |
 |---|---|---|---|---|
-| Engine de cálculo - cotação | Uso de valor incorreto para desconto, base de cálculo por peso ou de multiplicador  | Impacto crítico - pode causar prejuízo financeiro à empresa em caso de cobrança abaixo do correto ou prejuízo ao cliente, gerando possíveis questões jurídicas  |Alta  |1  |
-|Contrato da API (entre v1 e v2)|Mudança dos campos em requests ou responses - alteração de campos, de tipos dos campos |Impacto importante - pode causar quebra da integração com a API, impossibilitando o funcionamento correto do sistema|Média|1
-|Engine de Cálculo - desconto|Aplicação de desconto a cargas com volumes não elegíveis de acordo com as regras estabelecidas| Impacto crítico - poderá haver cobrança ao cliente abaixo do valor correto, o que acarretaria em perda financeira à empresa |Alta|1
-|Engine de cálculo - arredondamento |Ausência de precisão no arredondamento do valor final da cotação |Impacto médio - a curto e médio prazo não haveria risco alto relacionado a perdas à empresa ou aos clientes, tratando-se diferenças dízimas decimais. Porém, seria necessário ajuste para que o acúmulo das diferenças não cause impacto financeiro. |Baixa|2
+| Cálculo da cotação (faixa de peso, multiplicador, imposto) | Valor base calculado com a faixa errada, principalmente nos limites (o README define limites inclusivos); multiplicador ou imposto alterados sem aviso | Crítico: afeta toda cotação criada. Pode gerar cobrança a mais (dano financeiro ao cliente, perda de clientes ) ou a menos (perda financeira para a empresa) | Alta (confirmado: BUG-001, limites de 10, 50 e 100 kg) | 1 |
+| Desconto por volume (feature nova) | Percentual errado nas faixas ou nos limites (10, 20 e 50 volumes); desconto aplicado ou ausente indevidamente | Crítico: mexe direto no valor cobrado| Alta (confirmado: BUG-002) | 1 |
+| Faturamento e não retroatividade | valor de cotação já faturada recalculado com o desconto (cotações faturadas na carga inicial de dados não podem ter valor recalculado)| Crítico: inconsistência financeira | Alta (confirmado: BUG-004 e BUG-005) | 1 |
+| Contrato da API entre v1 e v2 | Campos renomeados ou com valor diferente entre rotas; mudança de tipo | Importante: quebra de integrações e de telas que consomem a API | Média. Obs.: rota verificada: POST/api/cotacoes | 2 |
+| Arredondamento do valor final | Truncar em vez de arredondar pela regra comercial; total sem duas casas decimais | Médio em cada cotação (centavos), mas se acumula em volume e chega às faturas emitidas | Alta (confirmado: BUG-003) | 2 |
 
 ## Fontes de verdade usadas
 
---> Realizei a análise detalhada do READ.ME e da Spec da nova funcionalidade, além de uma leitura do Changelog. Embora o changelog seja importante para estabelecer uma base das áreas afetadas, não considerei como pontos imutáveis. É totalmente possível que áreas fora do escopo da nova funcionalidade sejam afetadas e para isso são necessários os testes de regressão. 
+Usei o README como referência do que é correto hoje (regras vigentes na v1 e contrato da API), a SPEC como referência da regra nova, e a v1 como comportamento de comparação para tudo que não deveria mudar. O CHANGELOG serviu para saber onde o time de desenvolvimento diz ter mexido, mas não o tratei como limite do que pode ter sido afetado.
 
-<!-- Contra o que você validou cada comportamento: README, especificação,
-     changelog, comparação direta v1 × v2. Diga quando as fontes divergiram
-     entre si e o que você fez nesse caso. -->
 
 ## Abordagem por área
 
---> Smoke Test - verificação manual das funcionalidades mais críticas da tela de cotação
+| Área | Como testei |
+|---|---|
+| Faixa de peso, multiplicador e imposto | Postman + Newman, valores com pesos nos limites e ao redor (0.5, 0.99, 10, 10.01, 50, 50.01, 100, 100.01 e 1000 kg), mesma UF e 5 volumes para isolar o efeito do peso | |
+| Desconto por volume | Postman + Newman. Casos nos limites das faixas (9, 10, 19, 20, 49, 50 e 51 volumes) contra a tabela da SPEC, usando 50.5 kg e mesma UF para isolar dos limites de peso | |
+| Arredondamento | Postman + Newman - 9 casos com terceira casa decimal (7 devem subir, 2 devem cair) e 2 casos de formato (total terminando em zero). | |
+| Faturamento | Manual, via Postman: fatura de cotação nova, repetição (409), cotação inexistente (404), listagem por id_cotacao e conferência da cotação 10 (carga inicial) nas duas versões |  |
+| Impacto na carga inicial | Script que compara, para as 60 cotações faturadas, o detalhe na v1 e na v2, mais contagens por regra sobre as 200 cotações |  |
+| Tela | Smoke test manual no navegador: detalhe da cotação, percentual de desconto e formato do valor | |
 
---> Teste de API - validação de todas as rotas, utilizando Postman, manualmente (sem script)
-
---> Automação via Postman - utilização de script em javascript (puro) para validação de cpodigo
-de response, estrutura da response, tipos de dados 
-
-<!-- Como testou cada área priorizada: exploratório, comparação entre versões,
-     leitura de código, automação. E por que essa escolha para essa área. -->
+**Ferramentas**: Postman (versão gratuita) e Newman, com scripts em JavaScript. Como a versão gratuita não permite arquivo de dados, escrevi os casos em uma lista dentro do próprio script. O comando para rodar os testes automatizados estão em regressao/README.md.
 
 ## O que decidi NÃO testar
 
---> Devido ao relativo curto tempo para análise, criação e execução dos testes, decidi não testar a usabilidade e a experiência do usuário. 
---> Também tomei a decisão de não realizar, no primeiro momento, teste de carga nas rotas de criação de cotação e faturamento. 
-
---> O limite exato do arredondamento comercial (terceira casa decimal igual a 5) não pôde ser exercitado via API, porque nenhuma combinação de faixa de peso, multiplicador de rota e desconto produz esse valor. Foram testados os valores imediatamente abaixo (terceira casa 4) e acima (terceira casa 6) do limite. Risco residual: baixo. Só seria detectável com teste unitário direto na função de arredondamento.
-
---> Faturamento: não foram testados faturamento simultâneo (concorrência), ids inválidos (0, -1, texto), faturamento pela tela e o efeito do POST /_reset sobre faturas. Motivo: sem regra definida no README (ids inválidos, reset) ou difíceis de exercitar no Postman (concorrência). Risco residual: baixo a médio.
-
-
 | Ficou de fora | Por quê | Risco que estou aceitando |
 |---|---|---|
-| Limite exato do arredondamento comercial | Determinação de prioridade  | Baixo |
-|Contrato da API para rotas que não sejam POST /api/cotacoes e /api/cotacoes/{id}/faturar|Determinação de prioridade|Médio|
-|Usabilidade e experiência de usuário|Determinação de prioridade e tempo disponível para análise|Baixo||
-|Teste de carga|Determinação de prioridade e tempo disponível para análise|Baixo|
-|Teste de|||
-
-
+| Limite exato do arredondamento (terceira casa igual a 5) | Inalcançável via API: nenhuma combinação de faixa de peso, multiplicador e desconto produz ",xx5". Testei os vizinhos (terceira casa 4 e 6) | Baixo. Só um teste unitário na função de arredondamento cobriria |
+| Validações 422, filtro por cliente e paginação em detalhe | Tempo disponível; regras simples e menos ligadas ao valor cobrado | Médio |
+| Validação dos campos nas requests e responses (verifiquei rota POST api/cotacoes por ser a rota mais crítica)| Limitação do tempo disponível e priorização da rota mais crítica  | Baixo a médio |
+| Teste de carga | Tempo disponível e fora do escopo da mudança | Baixo |
+| Usabilidade e experiência do usuário | Tempo disponível; o foco foi a regra de negócio | Baixo |
+| Leitura do código-fonte | limitação do tempo disponível | Baixo |
 
 ## Ambiente e dados
 
--> Utilizei o VSCode para manejo do código e subir o servidor das duas versões da API, separadamente. Escolhi manejar a tela de cotações no navegador Firefox e não dentro do VsCode, para melhor visualização. 
+- Servidores locais, uma instância por versão, subidos pelo terminal do VSCode.  Node v24.21.0.
+- Postman 12.29.5 e Newman  6.2.2
+- Dados: carga inicial (200 cotações e 60 faturas), restaurada com `POST /_reset` antes de cada execução. Os testes criam cotações novas (ids a partir de 201), que não afetam a contagem sobre a carga inicial.
 
 ## Limitações da minha análise
 
-<!-- O que você não conseguiu concluir, e o que precisaria para concluir. -->
+- **Não analisei o código-fonte.** As causas prováveis dos bugs são apenas sugestões. Para confirmar, deveria acontecer uma leitura detalhada do código. 
+
+- **Faturamento foi testado manualmente e por amostra**, sem automação. Concorrência, ids inválidos e outros cenários serão feitos futuramento.
+- **A versão gratuita do Postman impede arquivo de dados**, então os casos ficam embutidos nos scripts. Mudar ou adicionar casos exige editar o script.

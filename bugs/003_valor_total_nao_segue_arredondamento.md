@@ -72,11 +72,11 @@ Suíte automatizada via Postman, pasta "arredondamento_desconto".
 
 -->  Cotação 34 kg, RS→SP, 11 volumes exibe "Total: R$ 121,29", idêntico ao valor devolvido pela API. O valor correto pela regra do README seria R$ 121,30. 
 
-![Texto alternativo](../bugs/assets/detalhe_cotacao_arredondamento.png)
+![screenshot detalhe arredondamento](../bugs/assets/detalhe_cotacao_arredondamento.png)
 
 --> Cotação 120kg, RS->SP, 15 volumes exibe valor total: R$ 363,87 e não o que seria correto pela regra: R$ 363,89. 
 
-![Texto alternativo](../bugs/assets/detalhe_cotacao_arredondamento_2.png)
+![screenshot detalhe arredondamento](../bugs/assets/detalhe_cotacao_arredondamento_2.png)
 
 
 
