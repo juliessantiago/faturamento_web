@@ -4,7 +4,3 @@
 
 -> Após a criação dos testes, a collection foi exportada para a pasta Postman, dentro do projeto de teste e executados no terminal, dentro do VSCode 
 
-
-
-**Lista de testes** 
-* valor_borda_peso/valores_borda_peso
