@@ -1,69 +1,44 @@
 # Matriz de cobertura
---> Observação: relatórios  dos resultados dos testes realizados encontram-se na pasta Bug Report 
+
 ## Como ler esta matriz
 
-"Automatizado?":  Sim |  Não (manual) 
+**Automatizado?** ✅ Sim (Postman + Newman, roda com um comando) | ⚠️ Parcial | ❌ Não (manual) | 🔲 Não executado nesta rodada
 
-"Resultado": Passou |  Falhou |  Falhou parcialmente
+**Resultado:** ✅ Passou | ❌ Falhou | ⚠️ Divergência a definir com o PO
 
-"Situação" : Coberto | Coberto com bug encontrado | Não coberto | Bloqueado.
+**Canal:** API ou via tela
+
+
+**Risco:** nível (Alto, Médio ou Baixo) e o risco em si. Considerei como risco mudanças na cobrança ao cliente e quebra nas regras de negócio 
+
+**Situação (tabela de regras):** Coberto | Coberto com bug | Coberto parcialmente | Não coberto
 
 ## Risco × cobertura
 
-Antes de fazer a análise da tabela, ler a descrição dos termos usados abaixo:
-
--> **Tela**: Teste foi realizado diretamente na tela de operação
-
--> **API**: Teste foi realizado nas rotas da API utilizando ferramenta Postman (Postman foi uma determinação de escolha pessoal)
-
--> **Não coberto**: Planejamento foi realizado, mas priorizei outros cenários
-
---> **Níveis de risco**: Para cada cenário testado estabeleci um nível diferente de risco:
-
-:exclamation: *Alto* - ao não passar, pode causar quebra de funcionamento do sistema, acarretando em perda financeira. Necessita análise criteriosa do código para correção
-
-*Médio - ao não passar, representa um erro importante, mas que não necessariamente impacta o financeiro. Pode ser corrigido através de análise das rotas da API
-
-*Baixo*  - ao não passar, representa um erro de baixa importância no presente momento, não impacta diretamente a área de negócios, nem o financeiro. Deve-se considerar a correção em nova versão
-
-| # | Risco/Descrição | Área | Como foi coberto | Automat/Manual | Resultado | Problema aberto |
+| # | Risco | Área | Como foi coberto | Automatizado? | Resultado | Problema aberto |
 |---|---|---|---|---|---|---|
-| 1 | Alto - valor de base incorreto no cálculo da cotação | V2 - Precificação  | Comparação campo a campo entre v1 e v2 via GET /api/cotacoes/{id}  |  manual |  OK/NOK | bug registrado em... |
-|2|Alto - valor de desconto errado no cálculo da cotação  |V2 - Precificação||||
-|3|Alto - cotações no sistema alteradas na V2 em relação a V1|Tela de operação||||
-|4|Alto - alteração da quantidade de faturas ou valores entre V1 e V2 |Tela de Operação||||
+| 1 | **Alto** — valor_base calculado com a faixa errada nos limites exatos de peso (10, 50 e 100 kg) | Faixa de peso | Cotações criadas em v1 e v2 com pesos 0.5, 0.99, 10, 10.01, 50, 50.01, 100, 100.01 e 1000 kg (5 volumes, mesma UF). Compara valor_base com a tabela do README e v1 × v2. |  Sim (valor_borda_peso) | ❌ Falhou: 6 de 36 asserções, todas em 10, 50 e 100 kg| [BUG-001](./bugs/001-valor-base-limite-faixa.md) 
+| 2 | **Alto** — desconto por volume aplicado com a faixa anterior nos limites exatos (10, 20 e 50 volumes) | Desconto por volume | Cotações na v2 com 9, 10, 19, 20, 49, 50 e 51 volumes (peso 50.5 kg, mesma UF, sem interferência do BUG-001). Compara desconto e valor_total com a tabela da SPEC | Sim (valor_borda_desconto)| ❌ Falhou: 6 de 14 asserções, em 10, 20 e 50 volumes | [BUG-002](./bugs/002-desconto-volume-limite-faixa.md)   |
+| 3 | **Médio** — valor_total com desconto truncado em vez de arredondado pela regra comercial | Arredondamento | 9 casos com terceira casa decimal (7 devem subir, 2 devem cair), pesos e volumes fora das bordas dos BUG-001 e 002. Cada caso verifica antes valor_base, multiplicador e desconto (premissas) | Sim (arredondamento_desconto) | ❌ Falhou: 7 dos 9 casos (os 2 que devem cair passaram) | [BUG-003](./bugs/003-arredondamento-valor-total-com-desconto.md) |
+| 4 | **Baixo** — valor_total sem duas casas decimais na resposta da API (28 em vez de 28.00) | Arredondamento (formato) | Texto cru da resposta em 2 casos com total terminando em zero (5 kg SP→SP, 5 e 11 volumes) | Sim (valor_borda_desconto) e testes manuais|Passou. A API devolve número no JSON (28 e 26.6)mas na tela o valor é exibido corretamente|  -  |
+| 5 | **Médio** — regressão no multiplicador de rota | Multiplicador de rota | Multiplicadores 1.0 (SP→SP), 1.4 (SP→MG) e 1.9 (RS→SP) conferidos na v2 como premissa dos testes de arredondamento; comparação v1 × v2 na cotação 10 (RS→SP). ⚠️ preencher: cenários via tela, se houver | Sim |  Passou  | — |
+| 6 | **Médio** — regressão no imposto (1,12) | Imposto | Cobertura indireta: todo valor_total esperado incorpora o imposto (ex.: 25 × 1,0 × 1,12 = 28,00; 110 × 1,0 × 1,12 = 123,20) | sim (indireto) | Passou: valores sem arredondamento envolvido (28,00, 123,20, 84,67, 325,58) batem | — |
+| 7 | **Alto** — cotação faturada mais de uma vez / erro no faturamento | Faturamento | PREENCHER ⚠️ preencher quando testar | ---- | ---- | ----|
+| 8 | **Médio** — contrato da API quebrado (campos, status, validações, paginação) | Contrato da API |----  |---  | ----- | — |
 
 ## Cobertura por regra de negócio
 
 | Regra | Fonte | Cenários testados | Situação |
 |---|---|---|---|
-| Faixa de peso | README ||  |
-| Multiplicador de rota | README | | |
-| Imposto | README | |  |
-| Arredondamento do valor final | README |  |  |
-| Fatura única por cotação | README | |  |
-| Desconto por volume | SPEC | | |
-| Contrato das rotas da API | README |  | |
-
-
-## :1234: Tabela de Análise de valor limite - peso (valor base)
-
-| Peso | Valor base correspondente |  Situação |
-|---|---|---
-| Abaixo de 1kg | R$ 25,00 |Testado|  |
-|  0.99kg| R$ 25,00 | |  |
-|  10kg  | R$ 25,00  | | |
-|  10.001kg| R$ 60,00 | |  |
-|  50kg| R$ 60,00 | |  |
-|  50.001kg| R$ 110,00 | |  |
-|  100kg| R$ 110,00 | |  |
-|  100.001kg| R$ 180,00 | |  |
-|  1000kg| R$ 180,00 | |  |
-
-
-
-
+| Faixa de peso | README | Bordas 0.5, 0.99, 10, 10.01, 50, 50.01, 100, 100.01 e 1000 kg em v1 e v2; pesos 5, 34, 50.5 e 120 kg nos demais testes | Coberto com bug (BUG-001) |
+| Multiplicador de rota | README | SP→SP (1.0), SP→MG (1.4) e RS→SP (1.9) na v2; v1 × v2 comparado em RS→SP (cotação 10) | Coberto parcialmente (sem falhas; rota para o Nordeste e comparação v1 × v2 nas rotas 1.0 e 1.4 não executadas) |
+| Imposto | README | valor_total conferido em cenários com e sem desconto | Coberto (indiretamente, sem falhas) |
+| Arredondamento do valor final | README | 9 casos com terceira casa decimal (2 caem, 7 sobem) e 2 casos de formato com total terminando em zero | Coberto com bug (BUG-003) |
+| Fatura única por cotação | README | -----| ----- |
+| Desconto por volume | SPEC | Bordas 9, 10, 19, 20, 49, 50 e 51 volumes; percentuais em 11, 12, 15, 25 e 60 volumes; 5 e 9 volumes com desconto 0 | Coberto com bug (BUG-002; BUG-003 no valor final). |
+| Contrato das rotas da API | README | -----| --------|
 
 ## Lacunas conhecidas
 
-*** PREENCHER 
+- **Interpretação de 10 volumes.** Houve uma leve ambiguidade(tabela: "10 a 19 → 5%"; texto: "acima de 10 volumes"). Foi tratado como bug (BUG-002) seguindo a tabela e registrado em PERGUNTAS_AO_PO.md.
+
