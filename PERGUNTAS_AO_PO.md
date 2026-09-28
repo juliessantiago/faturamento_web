@@ -40,11 +40,12 @@ Como a versão 1 já está em produção e o cálculo está sendo realizado dess
 a decisão de desconsiderar a informação dada na tela de 
 cotações. 
 
-**Bloqueia o go/no-go?** 
-<!-- Sim/Não e Por quê   -->
+* Bloqueia o go/no-go?
+
 Não. No momento da escrita dessa dúvida, não havia motivo 
 para considerar o comportamento como bug, visto que o 
 read.me não leva em consideração a quantidade de volumes. 
+
 ---
 
 ### 2. Desconto por volume - valor de borda 10 
@@ -79,10 +80,8 @@ O valor final da cotação de uma carga de 10 volumes é calculado acima do que 
 Para prosseguimento dos testes, adotei a interpretação de que o sistema deve considerar o comportamento exibido na tabela. Ou seja: para 10 volumes, deve-se dar o desconto de 5%. Então, como a v2 erra nesse ponto, considerei que este comportamento é um bug. 
 
 **Bloqueia o go/no-go?** 
-<!-- Sim/Não e Por quê   -->
+
 O atual comportamento da v2 nesse quesito influenciou diretamente na decisão do go/no-go, mas não impediu que eu tomasse uma deliberação.  
 
 ## Decisões que tomei sem perguntar
-
-<!-- Ambiguidades menores que você resolveu sozinho por não valerem uma ida ao
-     PO. Diga qual interpretação adotou e por quê. -->
+Embora não se tratem de ambiguidades, decidi não realizar automatizados do contrato da API (além da rota de criação de cotações) por analisar o tempo disponível antes da data da possível release. Tomei a decisão como QA, também, de não realizar teste específico de arredondamento quando o caso é 0.xx5, o que envolveria um teste unitário. 
