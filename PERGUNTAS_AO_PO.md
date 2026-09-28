@@ -4,6 +4,10 @@
 
 <!-- Para cada pergunta, use o bloco abaixo. Copie quantas vezes precisar. -->
 
+__________________________________________________________
+
+
+
 ### 1. Quantidade de volumes
 
 **Onde apareceu:** 
@@ -42,6 +46,41 @@ Não. No momento da escrita dessa dúvida, não havia motivo
 para considerar o comportamento como bug, visto que o 
 read.me não leva em consideração a quantidade de volumes. 
 ---
+
+### 2. Desconto por volume - valor de borda 10 
+
+**Onde apareceu:** 
+Versão 2 da API, com a nova funcionalidade
+
+**O que está ambíguo:**
+->  No arquivo SPEC-desconto-por-volume há de certa forma uma inconsistência. A tabela para determinar quanto de desconto deve ser dado para cada quantidade de volumes é a seguinte: 
+
+| volumes | desconto que deve ser dado 
+|---|---|
+| 10 a 19 volumes | 5% (0.05) |  
+| 20 a 49 volumes | 10% (0.10) |
+| 50 ou mais volumes | 15% (0.15) |  
+
+Porém, logo abaixo da tabela existe a informação: 
+*A política vale para pedidos **acima de 10 volumes** e não altera em nada a tabela de faixa de peso nem os multiplicadores de rota, que permanecem exatamente como estão hoje em produção.*
+
+Tendo essas duas informações, ocorreu a dúvida: o desconto de 5% é dado realmente de 10 (incluindo o 10) volumes a 19 ou somente acima de 10? 
+
+**O que a v1 faz hoje:**
+No caso da v1 não há influencia desse comportamento.
+
+**O que a v2 faz:**
+Na v2, uma carga de exatamente 10 volumes não está recebendo desconto de 5%. 
+
+**Por que isso importa:**
+O valor final da cotação de uma carga de 10 volumes é calculado acima do que deveria pois não está sendo cedido o desconto. 
+
+**Interpretação que adotei enquanto não há resposta:**
+Para prosseguimento dos testes, adotei a interpretação de que o sistema deve considerar o comportamento exibido na tabela. Ou seja: para 10 volumes, deve-se dar o desconto de 5%. Então, como a v2 erra nesse ponto, considerei que este comportamento é um bug. 
+
+**Bloqueia o go/no-go?** 
+<!-- Sim/Não e Por quê   -->
+O atual comportamento da v2 nesse quesito influenciou diretamente na decisão do go/no-go, mas não impediu que eu tomasse uma deliberação.  
 
 ## Decisões que tomei sem perguntar
 
