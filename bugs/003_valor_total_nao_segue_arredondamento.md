@@ -67,7 +67,15 @@ Exemplo de teste manual que me levou a verificar o cálculo: cotação de id 10 
 
 Suíte automatizada via Postman, pasta "arredondamento_desconto". 
 
---> Conferência via tela (detalhe da cotação na v2): cotação 34 kg, RS→SP, 11 volumes exibe "Desconto: 5%" e "Total: R$ 121,29", idêntico ao valor devolvido pela API. O valor correto pela regra do README seria R$ 121,30. 
+-->  Cotação 34 kg, RS→SP, 11 volumes exibe "Total: R$ 121,29", idêntico ao valor devolvido pela API. O valor correto pela regra do README seria R$ 121,30. 
+
+![Texto alternativo](../bugs/assets/detalhe_cotacao_arredondamento.png)
+
+--> Cotação 120kg, RS->SP, 15 volumes exibe valor total: R$ 363,87 e não o que seria correto pela regra: R$ 363,89. 
+
+![Texto alternativo](../bugs/assets/detalhe_cotacao_arredondamento_2.png)
+
+
 
 ## Como rodar o teste via Newman 
 
