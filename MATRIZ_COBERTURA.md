@@ -36,7 +36,9 @@
 | Arredondamento do valor final | README | 9 casos com terceira casa decimal (2 caem, 7 sobem) e 2 casos de formato com total terminando em zero | Coberto com bug (BUG-003) |
 | Fatura única por cotação | README | -----| ----- |
 | Desconto por volume | SPEC | Bordas 9, 10, 19, 20, 49, 50 e 51 volumes; percentuais em 11, 12, 15, 25 e 60 volumes; 5 e 9 volumes com desconto 0 | Coberto com bug (BUG-002; BUG-003 no valor final). |
-| Contrato das rotas da API | README | -----| --------|
+| Contrato das rotas da API | README | Request: Campos ausentes, campos inválidos. Response: estrutura e tipo dos dados | Coberto parcialmente (POST /api/cotacoes)|
+
+
 
 ## Lacunas conhecidas
 
