@@ -67,6 +67,8 @@ Exemplo de teste manual que me levou a verificar o cálculo: cotação de id 10 
 
 Suíte automatizada via Postman, pasta "arredondamento_desconto". 
 
+--> Conferência via tela (detalhe da cotação na v2): cotação 34 kg, RS→SP, 11 volumes exibe "Desconto: 5%" e "Total: R$ 121,29", idêntico ao valor devolvido pela API. O valor correto pela regra do README seria R$ 121,30. 
+
 ## Como rodar o teste via Newman 
 
  **npx newman run postman/collection.json -e postman/environment.json --folder arredondamento_desconto**
