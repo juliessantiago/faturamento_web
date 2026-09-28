@@ -23,7 +23,7 @@
 | 4 | **Baixo** — valor_total sem duas casas decimais na resposta da API (28 em vez de 28.00) | Arredondamento (formato) | Texto cru da resposta em 2 casos com total terminando em zero (5 kg SP→SP, 5 e 11 volumes) | Sim (valor_borda_desconto) e testes manuais|Passou. A API devolve número no JSON (28 e 26.6)mas na tela o valor é exibido corretamente|  -  |
 | 5 | **Médio** — regressão no multiplicador de rota | Multiplicador de rota | Multiplicadores 1.0 (SP→SP), 1.4 (SP→MG) e 1.9 (RS→SP) conferidos na v2 como premissa dos testes de arredondamento; comparação v1 × v2 na cotação 10 (RS→SP).| Sim |  Passou  | — |
 | 6 | **Médio** — regressão no imposto (1,12) | Imposto | Cobertura indireta: todo valor_total esperado incorpora o imposto (ex.: 25 × 1,0 × 1,12 = 28,00; 110 × 1,0 × 1,12 = 123,20) | sim (indireto) | Passou: valores sem arredondamento envolvido (28,00, 123,20, 84,67, 325,58) batem | — |
-| 7 | **Alto** — cotação faturada mais de uma vez / erro no faturamento | Faturamento |  | Teste manual no Postman | Passou | ----|
+| 7 | **Alto** — cotação faturada mais de uma vez / erro no faturamento | Faturamento |  | Teste manual no Postman | Passou. Obs.: bug 004 mostra que 29 das 60 cotações faturadas tiveram seu valor alterado, porém, não há certeza se houve faturamento novamente ou apenas há mudança na exibição (cálculo) | A definir com a PO|
 | 8 | **Médio** — contrato da API quebrado (campos, status, validações, paginação) | Contrato da API | Foi coberta a rota mais crítica: POST /api/cotacoes  |Todos cenários criados foram cobertos  - Consultar arquivo README da pasta REGRESSÃO | Todos cenários passaram | — |
 
 ## Cobertura por regra de negócio
