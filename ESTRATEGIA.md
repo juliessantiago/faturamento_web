@@ -51,10 +51,13 @@ de response, estrutura da response, tipos de dados
 --> O limite exato do arredondamento comercial (terceira casa decimal igual a 5) não pôde ser exercitado via API, porque nenhuma combinação de faixa de peso, multiplicador de rota e desconto produz esse valor. Foram testados os valores imediatamente abaixo (terceira casa 4) e acima (terceira casa 6) do limite. Risco residual: baixo. Só seria detectável com teste unitário direto na função de arredondamento.
 
 
-
 | Ficou de fora | Por quê | Risco que estou aceitando |
 |---|---|---|
-|  |  |  |
+| Limite exato do arredondamento comercial | Determinação de prioridade  | Baixo |
+|Contrato da API para rotas que não sejam POST /api/cotacoes e /api/cotacoes/{id}/faturar|Determinação de prioridade|Médio|
+|Usabilidade e experiência de usuário|Determinação de prioridade e tempo disponível para análise|Baixo||
+|Teste de carga|Determinação de prioridade e tempo disponível para análise|Baixo|
+
 
 ## Ambiente e dados
 
