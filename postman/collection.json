@@ -135,6 +135,49 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "post_cotacao_response",
+      "item": [
+        {
+          "name": "post_cotacao_response",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\npm.test(\"Status da resposta é 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Content-Type é JSON\", function () {\r\n    pm.expect(\r\n        pm.response.headers.get(\"Content-Type\")\r\n    ).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Resposta possui JSON válido\", function () {\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Estrutura da cotação criada está correta\", function () {\r\n    const body = pm.response.json();\r\n\r\n    const camposObrigatorios = [\r\n        \"id\",\r\n        \"cliente\",\r\n        \"peso_kg\",\r\n        \"volumes\",\r\n        \"uf_origem\",\r\n        \"uf_destino\",\r\n        \"faturada\",\r\n        \"criada_em\",\r\n        \"valor_base\",\r\n        \"multiplicador\",\r\n        \"desconto\",\r\n        \"valor_total\"\r\n    ];\r\n\r\n    camposObrigatorios.forEach(campo => {\r\n        pm.expect(body, `Campo ausente: ${campo}`)\r\n            .to.have.property(campo);\r\n    });\r\n});\r\n\r\npm.test(\"Tipos dos campos estão corretos\", function () {\r\n    const body = pm.response.json();\r\n\r\n    pm.expect(body.id).to.be.a(\"number\");\r\n    pm.expect(body.cliente).to.be.a(\"string\");\r\n    pm.expect(body.peso_kg).to.be.a(\"number\");\r\n    pm.expect(body.volumes).to.be.a(\"number\");\r\n    pm.expect(body.uf_origem).to.be.a(\"string\");\r\n    pm.expect(body.uf_destino).to.be.a(\"string\");\r\n    pm.expect(body.faturada).to.be.a(\"boolean\");\r\n    pm.expect(body.criada_em).to.be.a(\"string\");\r\n    pm.expect(body.valor_base).to.be.a(\"number\");\r\n    pm.expect(body.multiplicador).to.be.a(\"number\");\r\n    pm.expect(body.desconto).to.be.a(\"number\");\r\n    pm.expect(body.valor_total).to.be.a(\"number\");\r\n});\r\n\r\npm.test(\"Campos de texto não estão vazios\", function () {\r\n    const body = pm.response.json();\r\n\r\n    [\"cliente\", \"uf_origem\", \"uf_destino\", \"criada_em\"]\r\n        .forEach(campo => {\r\n            pm.expect(body[campo].trim(),\r\n                `${campo} não deve estar vazio`\r\n            ).to.not.equal(\"\");\r\n        });\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"cliente\": \"teste contrato api cotacao\", \r\n    \"peso_kg\": 10, \r\n    \"volumes\": 5,\r\n    \"uf_origem\": \"SP\",\r\n    \"uf_destino\": \"SP\" \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_base_v2}}/api/cotacoes",
+              "host": [
+                "{{url_base_v2}}"
+              ],
+              "path": [
+                "api",
+                "cotacoes"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
